@@ -1,0 +1,55 @@
+JSON
+
+index.php
+
+<?php
+
+       $student = json_decode(file_get_contents("info.json")); // fetching the json file
+        function check($input) {
+                if ($input==1){
+                        return "true";
+                }
+                else {
+                        return "false";
+                }
+        }
+       
+//        foreach($student as $student) {
+//                 // echo"<li>". $student->name ." ".$student->age." ".$student->status." ".$student->hobbies."</li>";
+//                 echo "<li>";
+//                 echo $student->name." ->";
+//                 echo $student->grade->biology. " ->";
+//                 echo check($student->status)."<br>";
+//                 echo "</li>";
+
+//         }
+      //  echo $student[1]->name;
+      //echo $student[1]->hobbies[2];
+      echo $student[1]->grade->chemistry;
+
+        // echo "<br>";
+        // echo check(1);
+?>
+
+
+info.json
+
+
+[
+    {
+        "name":"Sam",
+        "age" : 21,
+        "status": true,
+        "hobbies":["Football", "TV-Series", "Fishing"],
+        "grade":{"biology": "A", "chemistry":"A+"}
+      
+
+    },
+    {
+        "name":"Tim",
+        "age": 19,
+        "status":false,
+        "hobbies":["Football", "TV-Series", "Fishing"],
+        "grade":{"biology":"C", "chemistry":"D"}
+    }
+]

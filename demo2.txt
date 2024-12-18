@@ -1,0 +1,103 @@
+DIFFERECE BETWEEN INCLUDE & REQUIRE
+
+index.php
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COOKIE & SESSION</title>
+</head>
+<body>
+    <?php require 'support1.php'?>
+
+    <?php  echo "<br> NEW LINE"; ?>
+</body>
+</html>
+
+support.php
+<?php
+
+        echo strlen("SUMMER"); ?>
+________________________________________________________________
+
+Cookies & Session
+index.php
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COOKIE & SESSION</title>
+</head>
+<body>
+   <!-- COOKIE -->
+    <h1>SET CURRENCY</h1>
+    <form action="process.php" method="post">
+             <label for="currency"> USD</label>   
+            <input type="radio" name="currency" value="USD">
+            <label for="currency"> BDT</label>   
+            <input type="radio" name="currency" value="BDT">
+            <input type="text" name="username" placeholder="username">
+            <input type="submit" name="submit" value="submit">
+
+
+    </form>
+
+</body>
+</html>
+
+process.php
+
+<?php
+  // Cookie
+  
+  $cookie_name="currency";
+    $cookie_value;
+    if (isset($_POST['currency'])) {
+        $cookie_value = $_POST['currency'];
+        if (isset($_POST['submit']) ) {
+
+            setcookie($cookie_name, $cookie_value);
+            header("location: http://localhost/demoh/process.php");
+        }
+    }
+
+    if (count($_COOKIE)>0) {
+        echo $_COOKIE[$cookie_name];
+    }
+    else {
+        echo "No cookie found";
+    }
+    $url = $_SERVER['PHP_SELF'];
+  //  header("refresh:1; url=$url");
+
+// SESSION
+
+    session_start();
+    if (isset($_POST['submit'])) {
+        $_SESSION['username'] = $_POST['username']; // session variable
+    }
+    if (isset($_SESSION['username'])) {
+        echo "<br><h3 style=\"color:red\">". $_SESSION['username']."</h3>";
+    }
+
+
+?>
+
+<br><a href="http://localhost/demoh/process.php"> Refresh </a> <br>
+<a href="http://localhost/demoh/logout.php"> LogOut </a> 
+
+
+logout.php
+<?php
+    session_start();
+    session_unset();
+    session_destroy();
+
+    echo "<script>window.close();</script>";
+    header("location: http://localhost/demoh/process.php");
+
+?>
+

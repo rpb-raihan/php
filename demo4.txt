@@ -1,0 +1,124 @@
+JSON TUTORIAL
+
+index.php
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload</title>
+</head>
+<body>
+    <h1>Image Uppload</h1>
+    <form action="process.php" method="post" enctype="multipart/form-data">
+        <input type="text" name="username" placeholder="Username">
+        <input type="file" name="imagefile" accept="image/png">
+        <input type="submit" name="submit" value="submit">
+    </form>
+
+    <h1>Fetch User Profile</h1>
+    <form action="show.php" method="post">
+        <input type="text" name="username" placeholder="Username">
+        <input type="submit" name="submit" value="submit">
+    </form>
+</body>
+</html>
+
+_____________________________________________________
+
+process.php
+
+<?php
+
+        $imgid = rand().$_POST['username'].".png";
+
+        if(
+        move_uploaded_file($_FILES['imagefile']['tmp_name'], "userimages/".$imgid)) {echo "Image Uploaded!";}
+        else {
+            die("Not Uploaded!");
+        }
+
+        $array= array(
+            "username" => $_POST['username'],
+            "path" => "userimages/".$imgid
+        );
+
+        file_put_contents("jsonfiles/".$_POST['username'].".json",json_encode($array));
+        echo "<br> Json Created!";
+
+?>
+_________________________________________________
+
+show.php
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHOW PROFILE</title>
+<link rel="stylesheet" type="text/css" href="show.css">
+</head>
+<body>
+    <?php
+            if (file_exists("jsonfiles/".$_POST['username'].".json")) {
+                
+                $obj = json_decode(file_get_contents("jsonfiles/".$_POST['username'].".json"));
+
+                session_start();
+                $_SESSION['path'] = $obj->path;
+                $_SESSION['username']= $obj->username;
+                echo "<div class=\"box\">
+                    <img src=\"".$_SESSION['path']."\" class=\"pic\">
+                    </div>";
+            }
+            else {
+                die("User not found!");
+            }
+    ?>
+    <a href="http://localhost/demoh/logout.php">logout</a>
+</body>
+</html>
+
+
+______________________________________
+
+show.css
+
+.box {
+    padding-left: 10px;
+    padding-top: 10px;
+    height: 180px;
+    width: 280px;
+    border: 2px tomato solid;
+}
+.pic {
+    height: 150px;
+    width: 150px;
+    border-radius: 50%;
+    float: left;
+    border: 3px maroon outset;
+
+}
+
+___________________________________________
+
+logout.php
+
+<?php
+session_start();
+session_unset();
+session_destroy();
+
+echo "<script>window.close();</script>";
+header("Location: http://localhost/demoh/");
+
+?>
+
+
+ADDITIONAL FOLDERS REQUIRED
+
+"userimages"
+"jsonfiles"
+
