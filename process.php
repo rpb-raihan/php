@@ -77,3 +77,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 ?>   
 
+<!-- <br><a href="http://localhost/lab1/process.php"> Refresh </a> <br> -->
