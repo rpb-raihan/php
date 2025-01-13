@@ -63,18 +63,63 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         echo "<p><strong>Payment Status:</strong> $payment</p>";
 
-        //COOKIE
-   
-        $cookie_name = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $bookName); // Replace invalid characters with underscores
-        $cookie_value = $userName;
-        if ($flag) {
-            // Set the cookie with the sanitized name
-            setcookie($cookie_name, $cookie_value, time() + 120); // Cookie valid for 2 minutes
-            echo "<p>Book Borrowed Successfully</p>";
+        // TOKEN
+        $tokenNumber = $_POST['tokenNumber'];
+
+        // Path to the token.json file
+        $filePath = 'token.json';
+    
+        // Check if the file exists; if not, create it with an empty structure
+        if (!file_exists($filePath)) {
+            file_put_contents($filePath, json_encode(['usedTokens' => []], JSON_PRETTY_PRINT));
         }
+    
+        // Read the current contents of the JSON file
+        $jsonData = file_get_contents($filePath);
+        $data = json_decode($jsonData, true);
+    
+        // Ensure 'usedTokens' key exists and is an array
+        if (!isset($data['usedTokens']) || !is_array($data['usedTokens'])) {
+            $data['usedTokens'] = [];
+        }
+    
+        // Check if the token is already in the usedTokens array
+        if (in_array($tokenNumber, $data['usedTokens'])) {
+            echo "Invalid token: Token number $tokenNumber has already been used and cannot be reused!";
+        } else {
+            // Append the new token to the usedTokens array
+            $data['usedTokens'][] = $tokenNumber;
+    
+            // Save the updated data back to the file
+            file_put_contents($filePath, json_encode($data, JSON_PRETTY_PRINT));
+            echo "Token number $tokenNumber saved successfully!";
+        }
+    
+
+        //COOKIE
+
+        //validation code:
+        if (!empty($bookName)) {
+            // Sanitize the book name to match the cookie format in process.php
+            $sanitized_book_name = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $bookName);
+        
+            if (isset($_COOKIE[$sanitized_book_name])) {
+                echo "Book is not available";
+            } else {
+                $cookie_name = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $bookName); // Replace invalid characters with underscores
+                $cookie_value = $userName;
+                if ($flag) {
+                    // Set the cookie with the sanitized name
+                    setcookie($cookie_name, $cookie_value, time() + 120); // Cookie valid for 2 minutes
+                    echo "<p>Book Borrowed Successfully</p>";
+                }
+            }
+        } else {
+            echo "Invalid book name";
+        }
+   
+      
          
     }
 
 ?>   
-
-<!-- <br><a href="http://localhost/lab1/process.php"> Refresh </a> <br> -->
